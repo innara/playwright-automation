@@ -29,4 +29,4 @@ npx playwright install
 npx playwright test  
 
 ## 👩‍💻 Author
-QA Engineer | Manual + API + Automation Testing
+Innara Karim

@@ -1,42 +1,22 @@
-const { test, expect } = require('@playwright/test');
-const LoginPage = require('../pages/loginPage');
+class LoginPage {
+  constructor(page) {
+    this.page = page;
 
-test.describe('Login Page Tests', () => {
+    this.usernameInput = '#user-name';
+    this.passwordInput = '#password';
+    this.loginButton = '#login-button';
+    this.errorMessage = this.page.locator('[data-test="error"]');
+  }
 
-  test('Valid login should succeed', async ({ page }) => {
-    const login = new LoginPage(page);
+  async open() {
+    await this.page.goto('https://www.saucedemo.com/');
+  }
 
-    await login.open();
-    await login.login('tomsmith', 'SuperSecretPassword!');
+  async login(username, password) {
+    await this.page.fill(this.usernameInput, username);
+    await this.page.fill(this.passwordInput, password);
+    await this.page.click(this.loginButton);
+  }
+}
 
-    await expect(page.locator('#flash')).toContainText('You logged into a secure area!');
-  });
-
-  test('Invalid username should fail login', async ({ page }) => {
-    const login = new LoginPage(page);
-
-    await login.open();
-    await login.login('wronguser', 'SuperSecretPassword!');
-
-    await expect(page.locator('#flash')).toContainText('Your username is invalid!');
-  });
-
-  test('Invalid password should fail login', async ({ page }) => {
-    const login = new LoginPage(page);
-
-    await login.open();
-    await login.login('tomsmith', 'wrongpass');
-
-    await expect(page.locator('#flash')).toContainText('Your password is invalid!');
-  });
-
-  test('Empty fields should show error', async ({ page }) => {
-    const login = new LoginPage(page);
-
-    await login.open();
-    await login.login('', '');
-
-    await expect(page.locator('#flash')).toBeVisible();
-  });
-
-});
+module.exports = LoginPage;
